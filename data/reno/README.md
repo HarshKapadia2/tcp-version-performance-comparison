@@ -5,6 +5,10 @@
 > -	Romeo = Sender
 > -	Juliet = Receiver
 
+## Graph
+
+![](sender-ss.svg)
+
 ## Romeo's `iperf3` Output
 
 > NOTE: Three parallel flows were executed.
