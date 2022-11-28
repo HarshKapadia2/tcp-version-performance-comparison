@@ -41,3 +41,21 @@ rtt min/avg/max/mdev = 415.963/661.062/844.779/128.272 ms
 rtt min/avg/max/mdev = 48.709/65.423/84.616/9.746 ms
 ```
 
+## Simultaneous TCP Reno and TCP Vegas Flows
+
+### TCP Reno
+
+```shell
+[ ID] Interval           Transfer     Bandwidth       Retr
+[  4]   0.00-60.00  sec  6.31 MBytes   882 Kbits/sec   72             sender
+[  4]   0.00-60.00  sec  6.00 MBytes   839 Kbits/sec                  receiver
+```
+
+### TCP Vegas
+
+```shell
+[ ID] Interval           Transfer     Bandwidth       Retr
+[  4]   0.00-60.00  sec  1.40 MBytes   195 Kbits/sec    1             sender
+[  4]   0.00-60.00  sec  1.30 MBytes   182 Kbits/sec                  receiver
+```
+
