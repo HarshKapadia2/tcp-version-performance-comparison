@@ -7,7 +7,7 @@
 
 ## Graphs
 
-> NOTE: TCP BBR followed by TCP Reno in both graphs.
+> NOTE: TCP BBR followed by TCP Reno in all graphs.
 
 ![](tput-vs-time.png)
 
