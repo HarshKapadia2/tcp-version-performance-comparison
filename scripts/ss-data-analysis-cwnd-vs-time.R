@@ -1,5 +1,4 @@
 library(ggplot2)
-
 dat <- read.csv("sender-ss.csv", header=FALSE)
 names(dat) <- c("timestamp", "sender", "tput", "rtt", "retr", "retr.total", "cwnd", "ssthresh")
 
@@ -15,10 +14,10 @@ lost <- na.omit(dat[dat$retr > 0,])
 
 timestamp_min <- min(dat$timestamp)
 
-q <- ggplot(dat) + geom_line(aes(x=timestamp-timestamp_min, y=rtt, colour=as.factor(sender)))
+q <- ggplot(dat) + geom_line(aes(x=timestamp-timestamp_min, y=cwnd, colour=as.factor(sender)))
 q <- q + theme_bw() + facet_wrap(~sender, ncol=1, drop=T) + geom_vline(data=lost, aes(xintercept=timestamp-timestamp_min, colour=as.factor(sender)), alpha=0.1)
-q <- q + scale_y_continuous("RTT (ms)") + scale_colour_discrete("Sender") + scale_x_continuous("Time (s)") + theme(legend.position="bottom")
+q <- q + scale_y_continuous("CWND") + scale_colour_discrete("Sender") + scale_x_continuous("Time (s)") + theme(legend.position="bottom")
 
-svg("sender-ss-rtt-vs-time.svg")
+svg("sender-ss.svg")
 print(q)
 dev.off()

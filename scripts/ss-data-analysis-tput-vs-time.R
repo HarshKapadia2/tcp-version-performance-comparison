@@ -3,6 +3,8 @@ library(ggplot2)
 dat <- read.csv("sender-ss.csv", header=FALSE)
 names(dat) <- c("timestamp", "sender", "tput", "rtt", "retr", "retr.total", "cwnd", "ssthresh")
 
+dat <- dat[-1, ]
+
 senders <- data.frame(table(dat$sender))
 sndlist <- senders[senders$Freq > 100,]$Var1
 
