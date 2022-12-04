@@ -1,14 +1,10 @@
-# Performance Comparison of various TCP versions
+# Performance Comparison of TCP Versions
 
-> Harsh Gaurang Kapadia
->
-> harshk@bu.edu
-
-Comparing the performance of TCP Tahoe, TCP Reno, TCP CUBIC, TCP Vegas and TCP BBR.
+Comparing the performance of TCP Reno, TCP CUBIC, TCP Vegas and TCP BBR.
 
 [TCP Congestion Control practical/blog](https://witestlab.poly.edu/blog/tcp-congestion-control-basics)
 
-[Data](data)
+[Experimental findings](data)
 
 [Learn about TCP](https://networking.harshkapadia.me/tcp)
 
@@ -22,30 +18,3 @@ Comparing the performance of TCP Tahoe, TCP Reno, TCP CUBIC, TCP Vegas and TCP B
     -   Just like the Reno and Vegas experiment in the blog above.
 -   Vary the buffer size (amount of bytes held in the buffer) and check the Throughput and RTT for every TCP version.
     -   Just like the Reno and Vegas experiment in the blog above.
-
-<!-- ### Simultaneous Throughput
-
--   Reno vs CUBIC
-    -   CUBIC eats up Reno
--   Reno vs Vegas
-    -   Reno eats up Vegas
--   Reno vs BBR
-    -   No idea
--   CUBIC vs Vegas
-    -   CUBIC eats up Vegas
--   CUBIC vs BBR
-    -   No idea
--   Vegas vs BBR
-    -   No idea
-
-### RTT -->
-
-## To Do
-
--   Decide the ideas to be implemented.
--   Check if any hypothesis can be formed.
--   Run the experiments.
--   Parse RTT and Throughput from the SS output.
--   Create the graphs.
--   Evaluate the terminal output and the graphs.
--   Write the report.
