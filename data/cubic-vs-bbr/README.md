@@ -7,7 +7,7 @@
 
 ## Graphs
 
-> NOTE: TCP BBR followed by TCP CUBIC in both graphs.
+> NOTE: TCP BBR followed by TCP CUBIC in all graphs.
 
 ![](tput-vs-time.png)
 

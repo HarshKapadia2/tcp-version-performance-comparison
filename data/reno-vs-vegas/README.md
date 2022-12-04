@@ -7,7 +7,7 @@
 
 ## Graphs
 
-> NOTE: TCP Vegas followed by TCP Reno in both graphs.
+> NOTE: TCP Vegas followed by TCP Reno in all graphs.
 
 ![](tput-vs-time.png)
 
