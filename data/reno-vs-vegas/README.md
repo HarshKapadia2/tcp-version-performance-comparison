@@ -5,6 +5,16 @@
 > -   Romeo = Sender
 > -   Juliet = Receiver
 
+## Graphs
+
+> NOTE: TCP Vegas followed by TCP Reno in both graphs.
+
+![](tput-vs-time.png)
+
+![](cwnd-vs-time.png)
+
+![](rtt-vs-time.png)
+
 ## TCP Reno
 
 > Ports:
