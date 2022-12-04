@@ -3,22 +3,21 @@
 DST=$1
 
 touch sender-ss.txt
-
 rm -f sender-ss.txt 
 
-# convert to Kilo (K)
+# convert to kilo (K)
 # Eg: 21.2M = 21200
 # Eg: 21.2K = 21.2
-convertToKilo()
+converttokilo()
 {
-  sed '
+  echo $1 | sed '
       s/\([0-9][0-9]*\(\.[0-9]\+\)\?\)K/\1*1/g;
       s/\([0-9][0-9]*\(\.[0-9]\+\)\?\)M/\1*1000/g;
       s/\([0-9][0-9]*\(\.[0-9]\+\)\?\)G/\1*1000000/g;
       s/\([0-9][0-9]*\(\.[0-9]\+\)\?\)T/\1*1000000000/g;
       s/\([0-9][0-9]*\(\.[0-9]\+\)\?\)P/\1*1000000000000/g;
       s/\([0-9][0-9]*\(\.[0-9]\+\)\?\)E/\1*1000000000000000/g
-  ' </dev/stdin | bc
+  ' | bc
 }
 
 cleanup()
@@ -31,7 +30,10 @@ cleanup()
 	
     # get delivery rate (throughput)
 	tput=$(cat sender-ss.txt | sed -e ':a; /<->$/ { N; s/<->\n//; ba; }' | grep "ESTAB" | grep "unacked" | grep -oP '\bpacing_rate.*\bbusy:' | awk -F '[bps ]' '{print $8}' | tr -d ' ')
-	tput=$(echo $tput | convertToKilo)
+	normalized_tput=""
+	for i in $tput; do
+		normalized_tput=${normalized_tput:+$normalized_tput$'\n'}$(converttokilo $i)
+	done
 
 	# get rtt
 	rtt=$(cat sender-ss.txt | sed -e ':a; /<->$/ { N; s/<->\n//; ba; }' | grep "ESTAB" | grep "unacked" | grep -oP '\brto:.*\bmss' | awk -F '[:/ ]' '{print $4}' | tr -d ' ')
@@ -43,7 +45,7 @@ cleanup()
 	cwnd_ssthresh=$(cat sender-ss.txt | sed -e ':a; /<->$/ { N; s/<->\n//; ba; }' | grep "ESTAB" | grep "unacked" | grep -oP '\bcwnd:.*(\s|$)\bbytes_acked' | awk -F '[: ]' '{print $2","$4}')
 
 	# concatenate into one CSV
-	paste -d ',' <(printf %s "$ts") <(printf %s "$sender") <(printf %s "$tput") <(printf %s "$rtt") <(printf %s "$retr") <(printf %s "$cwnd_ssthresh") > sender-ss.csv
+	paste -d ',' <(printf %s "$ts") <(printf %s "$sender") <(printf %s "$normalized_tput") <(printf %s "$rtt") <(printf %s "$retr") <(printf %s "$cwnd_ssthresh") > sender-ss.csv
 
 	exit 0
 }
