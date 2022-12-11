@@ -2,7 +2,7 @@
 Harsh Kapadia
 :author:    Harsh Kapadia
 :toc:       left
-:imagesdir: ../data
+:imagesdir: ./static/img
 :docinfo:   shared
 :sectanchors:
 :figure-caption!:
@@ -105,7 +105,7 @@ If we only receive three duplicate acknowledgements, we expect to see Congestion
 
 ==== Result and Analysis
 
-image::reno/sender-ss.svg[]
+image::reno-cwnd.svg[]
 
 As expected, we could initially see an exponential growth of the CWND, which is the Slow Start phase. In our measurements, we saw the Slow Start phase only at the start of the flows, but not after that indicating that there were no packets that timed out.
 
@@ -125,7 +125,7 @@ In comparison to TCP Reno, it is expected that TCP CUBIC will have a more aggres
 
 ==== Result and Analysis
 
-image::cubic/sender-ss.svg[]
+image::cubic-cwnd.svg[]
 
 As expected, the CWND is cubic and much more aggressive than TCP Reno.
 
@@ -143,7 +143,7 @@ link:https://networking.harshkapadia.me/tcp#tcp-vegas[TCP Vegas^] is a Delay-bas
 
 ==== Result and Analysis
 
-image::vegas/itr-2/sender-ss.svg[]
+image::vegas-cwnd.svg[]
 
 Although there were a few retransmissions (29 as per `iperf3`), they are far fewer than TCP Reno (97 retransmissions) or TCP CUBIC (119 retransmissions).
 
@@ -162,7 +162,7 @@ Expected TCP BBR phases in the graph:
 
 ==== Result and Analysis
 
-image::bbr/sender-ss.svg[]
+image::bbr-cwnd.svg[]
 
 As expected, the sharp rise in the CWND at the start is the Startup Stage, the dip in CWND after that is the Drain Stage and the steady state after that is the ProbeBW Stage.
 
@@ -178,8 +178,8 @@ As TCP CUBIC is more aggressive than TCP Reno, it is expected that it will not b
 
 NOTE: TCP CUBIC followed by TCP Reno in both graphs.
 
-image::reno-vs-cubic/tput-vs-time.png[]
-image::reno-vs-cubic/cwnd-vs-time.png[]
+image::reno-cubic-tput.png[]
+image::reno-cubic-cwnd.png[]
 
 As expected, TCP CUBIC bullies TCP Reno and dominates the connection, thus behaving unfairly with TCP Reno.
 
@@ -199,8 +199,8 @@ These behaviors made us think that TCP Vegas will reduce its CWND as soon as it 
 
 NOTE: TCP Vegas followed by TCP Reno in both graphs.
 
-image::reno-vs-vegas/tput-vs-time.png[]
-image::reno-vs-vegas/cwnd-vs-time.png[]
+image::reno-vegas-tput.png[]
+image::reno-vegas-cwnd.png[]
 
 As expected, TCP Vegas' average TPUT is ~121 kbps (as reported by `iperf3`) and TCP Reno has an average TPUT of ~957 Kbps (as reported by `iperf3`).
 
@@ -216,7 +216,7 @@ link:https://github.com/HarshKapadia2/tcp-version-performance-comparison/tree/ma
 
 TCP BBR actively avoids network congestion (by operating at the optimal 'knee' as seen in the figure below), whereas a Loss-based Algorithm such as TCP Reno waits for a congestion (packet loss) to occur to react to the congestion (by operating at the 'cliff' on the extreme right of the figure below).
 
-image::bbr/working-point.webp[]
+image::bbr-working-point.webp[]
 link:https://queue.acm.org/detail.cfm?id=3022184[Figure credits^]
 
 As TCP BBR is operating at a more optimal point than TCP Reno, so we expected BBR to outperform TCP Reno.
@@ -225,9 +225,9 @@ As TCP BBR is operating at a more optimal point than TCP Reno, so we expected BB
 
 NOTE: TCP BBR followed by TCP Reno in all three graphs.
 
-image::reno-vs-bbr/tput-vs-time.png[]
-image::reno-vs-bbr/cwnd-vs-time.png[]
-image::reno-vs-bbr/rtt-vs-time.png[]
+image::reno-bbr-tput.png[]
+image::reno-bbr-cwnd.png[]
+image::reno-bbr-rtt.png[]
 
 Although, TCP BBR's TPUT increases towards the end of the graph, over the entire connection, TCP Reno and TCP BBR were both able to use the connection fairly at ~500 Kbps each, as recorded by `iperf3`. This means that TCP BBR is able to hold its own in front of an aggressive algorithm like TCP Reno and it has its optimal point of operation and the consideration of both Bottleneck Bandwidth and RTT to decide the sending rate to thank.
 
