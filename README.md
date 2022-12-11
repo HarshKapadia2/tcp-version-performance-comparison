@@ -2,7 +2,9 @@
 
 Comparing the performance of TCP Reno, TCP CUBIC, TCP Vegas and TCP BBR.
 
-[Report](report.pdf)
+[Report](https://harshkapadia2.github.io/tcp-version-performance-comparison)
+
+[Report (PDF)](report.pdf)
 
 [Short demo](https://www.youtube.com/watch?v=s_6OOjMOxpQ)
 

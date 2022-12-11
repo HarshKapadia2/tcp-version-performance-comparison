@@ -1,0 +1,267 @@
+= Performance Comparison of TCP Versions
+Harsh Kapadia
+:author:    Harsh Kapadia
+:toc:       left
+:imagesdir: ../data
+:docinfo:   shared
+:sectanchors:
+:figure-caption!:
+
+[NOTE]
+====
+* GitHub repository: link:https://github.com/HarshKapadia2/tcp-version-performance-comparison[HarshKapadia2/tcp-version-performance-comparison^]
+* link:https://www.youtube.com/watch?v=s_6OOjMOxpQ[Demo video^]
+====
+
+== Problem Statement
+
+=== Definition
+
+The link:https://networking.harshkapadia.me/tcp[Transmission Control Protocol (TCP)^] is one of the most widely used protocols on the internet for reliable data transfer. Over the years, there has been a lot of research into improving the performance of TCP when it comes to utilizing a maximum of the available capacity (bandwidth) of the connection and at the same time keeping the newly developed versions fair with the previous versions in terms of the available throughput for different TCP versions sharing the same connection.
+
+The TCP versions explored
+
+* link:https://networking.harshkapadia.me/tcp#tcp-reno[TCP Reno^]
+* link:https://networking.harshkapadia.me/tcp#tcp-cubic[TCP CUBIC^]
+* link:https://networking.harshkapadia.me/tcp#tcp-vegas[TCP Vegas^]
+* link:https://networking.harshkapadia.me/tcp#tcp-bbr[TCP BBR^]
+
+=== Learning Outcomes
+
+* Learning and comparing how different TCP versions respond to network congestion.
+* Comparing how fair different TCP versions are to each other.
+
+=== Experiments
+
+Two experiments were conducted to meet the link:#_learning_outcomes[learning outcomes].
+
+==== Experiment No. 1
+
+* Plot the Time vs Congestion Window (CWND) graphs for each TCP version.
+* This fulfills the first link:#_learning_outcomes[learning outcome].
+
+==== Experiment No. 2
+
+* Plot the Time vs Congestion Window (CWND) and Time vs Throughput (TPUT) graphs for two TCP versions running simultaneously.
+* This fulfills the second link:#_learning_outcomes[learning outcome].
+
+== Design and Execution
+
+The link:https://witestlab.poly.edu/blog/tcp-congestion-control-basics[TCP Congestion Control blog^] was used to obtain the infrastructure schema, basic scripts and methodology to conduct the experiments.
+
+=== Setup Diagram
+
+link:https://witestlab.poly.edu/blog/tcp-congestion-control-basics/#runmyexperiment[RSpec file^]
+
+image::setup-diagram.png[]
+
+For all the experiments below, **Romeo is the Sender** and **Juliet is the Receiver**.
+
+=== Experimental Methodology
+
+The Router's Buffer Capacity (Rate) and Buffer Size need to be set to 1 Mbps and 0.1 MB respectively to get comparable results. The package `iperf3` also needs to be installed to simulate network traffic. All the commands for this can be found in the link:https://witestlab.poly.edu/blog/tcp-congestion-control-basics/#setupexperiment['Set up experiment' section of the blog^].
+
+==== Experiment No. 1
+
+===== Method
+
+* Network traffic is sent from Romeo to Juliet through the Router.
+* Three parallel flows of data are sent from the sender over 60 seconds using `iperf3`. This is done for each considered version of TCP individually.
+* The Throughput (TPUT) and Congestion Window (CWND) values are recorded for each algorithm using `iperf3` and `ss`.
+* Using the Shell and R scripts provided by the blog, a graph for Time vs CWND is plotted for the three parallel flows.
+
+===== Scripts and Commands
+
+* link:https://witestlab.poly.edu/blog/tcp-congestion-control-basics/#generatingdata[Shell script^]
+* link:https://witestlab.poly.edu/blog/tcp-congestion-control-basics/#visualization[R script^]
+* link:https://witestlab.poly.edu/blog/tcp-congestion-control-basics/#generatingdata[Commands to execute^]
+
+==== Experiment No. 2
+
+===== Method
+
+* Two simultaneous flows of different TCP versions are sent from the sender for 60 seconds using `iperf3`.
+* This simultaneous flow is executed for permutations of the four TCP versions mentioned in link:#_problem_statement[Problem Statement].
+* After modifying the Shell and R scripts provided by the blog, graphs for Time vs TPUT and Time vs CWND were plotted for the simultaneous flows.
+
+===== Scripts and Commands
+
+The Shell and R scripts for this experiment had to be modified from the original scripts provided by the blog.
+
+* link:https://github.com/HarshKapadia2/tcp-version-performance-comparison/tree/main/scripts[Modified scripts^]
+* link:https://witestlab.poly.edu/blog/tcp-congestion-control-basics/#additionalexerciseslowdelaycongestioncontrol[Commands to execute^] (2nd half of the section in the link)
+
+== Results
+
+=== TCP Reno (Experiment No. 1)
+
+==== Hypothesis
+
+link:https://networking.harshkapadia.me/tcp#tcp-reno[TCP Reno^] goes through the link:https://networking.harshkapadia.me/tcp#slow-start-ss[Slow Start^], link:https://networking.harshkapadia.me/tcp#congestion-avoidance[Congestion Avoidance (AIMD)^] and link:https://networking.harshkapadia.me/tcp#fast-recovery[Fast Recovery^] phases during Congestion Control.
+
+The Time vs CWND graph is expected to start with the exponential Slow Start phase, which is used to find the point of congestion (Slow Start Threshold - SSTHRESH) as quickly as possible, to be able to utilize the link to its maximum capacity. After this, the Slow Start phase will be seen only if any packets time out.
+
+If we only receive three duplicate acknowledgements, we expect to see Congestion avoidance and Fast Recovery stages repeating every time we have such a condition.
+
+==== Result and Analysis
+
+image::reno/sender-ss.svg[]
+
+As expected, we could initially see an exponential growth of the CWND, which is the Slow Start phase. In our measurements, we saw the Slow Start phase only at the start of the flows, but not after that indicating that there were no packets that timed out.
+
+Packet retransmissions are indicated by the coloured vertical lines in the graphs and we can see post the Slow Start phase that a Sawtooth pattern is visible. This is the Fast Recovery phase repeating every time three duplicate acknowledgements are received.
+
+The dotted line indicates the SSTHRESH values for every phase.
+
+link:https://github.com/HarshKapadia2/tcp-version-performance-comparison/tree/main/data/reno[More details^]
+
+=== TCP CUBIC (Experiment No. 1)
+
+==== Hypothesis
+
+link:https://networking.harshkapadia.me/tcp#tcp-cubic[TCP CUBIC^] uses a cubic function to regulate CWND, which aggressively increases the CWND in a convex fashion and once the Slow Start Threshold (SSTHRESH) is passed, it increases aggressively in a concave fashion.
+
+In comparison to TCP Reno, it is expected that TCP CUBIC will have a more aggressive increase of the CWND, but will result in more retransmissions due to reaching SSTHRESH more frequently.
+
+==== Result and Analysis
+
+image::cubic/sender-ss.svg[]
+
+As expected, the CWND is cubic and much more aggressive than TCP Reno.
+
+From the graphs of TCP Reno and TCP CUBIC, it can be seen that the loss events for TCP CUBIC are more frequent than for TCP Reno, as expected. So, TCP CUBIC is able to reach optimum utilization much faster and more frequently than TCP Reno.
+
+Also, as expected, the outputs of `iperf3` reveal that TCP CUBIC had 119 retransmissions, while TCP Reno had 97.
+
+link:https://github.com/HarshKapadia2/tcp-version-performance-comparison/tree/main/data/cubic[More details^]
+
+=== TCP Vegas (Experiment No. 1)
+
+==== Hypothesis
+
+link:https://networking.harshkapadia.me/tcp#tcp-vegas[TCP Vegas^] is a Delay-based Algorithm which modifies the CWND size based on the Round-Trip Time (RTT) values calculated on-the-fly and keeps it steady between a certain range, unlike TCP Reno and TCP CUBIC, which are Loss-based Algorithms. This implies that TCP Vegas should not suffer from retransmissions.
+
+==== Result and Analysis
+
+image::vegas/itr-2/sender-ss.svg[]
+
+Although there were a few retransmissions (29 as per `iperf3`), they are far fewer than TCP Reno (97 retransmissions) or TCP CUBIC (119 retransmissions).
+
+link:https://github.com/HarshKapadia2/tcp-version-performance-comparison/tree/main/data/vegas/itr-2[More details^]
+
+=== TCP BBR (Experiment No. 1)
+
+==== Hypothesis
+
+link:https://networking.harshkapadia.me/tcp#tcp-bbr[TCP BBR (Bottleneck Bandwidth and Round-Trip Propagation Time)^] is a Delay-based and Model-based Algorithm. TCP BBR uses measurement for the network's Bottleneck Bandwidth (BB) and Round Trip Propagation Time to build a model which helps determine the data sending (pacing) rate.
+
+Expected TCP BBR phases in the graph:
+* Startup Stage (Sharp increase in CWND to probe BB by causing queuing at Bottleneck connection)
+* Drain Stage (Inverse of Startup Stage to remove queuing at the Bottleneck connection)
+* Probe Bandwidth (ProbeBW) Stage (Steady state which monitors RTT)
+
+==== Result and Analysis
+
+image::bbr/sender-ss.svg[]
+
+As expected, the sharp rise in the CWND at the start is the Startup Stage, the dip in CWND after that is the Drain Stage and the steady state after that is the ProbeBW Stage.
+
+link:https://github.com/HarshKapadia2/tcp-version-performance-comparison/tree/main/data/bbr[More details^]
+
+=== TCP Reno vs TCP CUBIC (Experiment No. 2)
+
+==== Hypothesis
+
+As TCP CUBIC is more aggressive than TCP Reno, it is expected that it will not be fair to TCP Reno and will dominate the connection's TPUT.
+
+==== Result and Analysis
+
+NOTE: TCP CUBIC followed by TCP Reno in both graphs.
+
+image::reno-vs-cubic/tput-vs-time.png[]
+image::reno-vs-cubic/cwnd-vs-time.png[]
+
+As expected, TCP CUBIC bullies TCP Reno and dominates the connection, thus behaving unfairly with TCP Reno.
+
+As TCP CUBIC increases its CWND very aggressively, it reaches the point of congestion faster and in the process transfers more data than TCP Reno. The faster CWND increase by TCP CUBIC keeps happening and over time consumes the available buffer capacity at the bottleneck queue, which forces TCP Reno to keep reducing its CWND, which implies lesser TPUT for TCP Reno with time.
+
+link:github.com/HarshKapadia2/tcp-version-performance-comparison/tree/main/data/reno-vs-cubic[More details^]
+
+=== TCP Reno vs TCP Vegas (Experiment No. 2)
+
+==== Hypothesis
+
+TCP Reno is a Loss-based Algorithm, while TCP Vegas is a Delay-based Algorithm. This implies that TCP Vegas will adjust its CWND based on the RTT that it measures on-the-fly, so that it doesn’t lose packets. In contrast, TCP Reno increases its CWND till it loses packets.
+
+These behaviors made us think that TCP Vegas will reduce its CWND as soon as it detects an increase in RTT for its packets that will be cause by the aggressive TCP Reno filling up the Bottleneck queue with its packets.
+
+==== Result and Analysis
+
+NOTE: TCP Vegas followed by TCP Reno in both graphs.
+
+image::reno-vs-vegas/tput-vs-time.png[]
+image::reno-vs-vegas/cwnd-vs-time.png[]
+
+As expected, TCP Vegas' average TPUT is ~121 kbps (as reported by `iperf3`) and TCP Reno has an average TPUT of ~957 Kbps (as reported by `iperf3`).
+
+TCP Reno is thus not fair to TCP Vegas by any means. TCP Vegas' algorithm is too civil to compete with TCP Reno's algorithm.
+
+link:https://github.com/HarshKapadia2/tcp-version-performance-comparison/tree/main/data/reno-vs-vegas[More details^]
+
+**Also, similar results are expected for TCP CUBIC vs TCP Vegas**, as TCP CUBIC is even more aggressive than TCP Reno (which was proved link:#_tcp_reno_vs_tcp_cubic_experiment_no_2[above]).
+
+=== TCP Reno vs TCP BBR (Experiment No. 2)
+
+==== Hypothesis
+
+TCP BBR actively avoids network congestion (by operating at the optimal 'knee' as seen in the figure below), whereas a Loss-based Algorithm such as TCP Reno waits for a congestion (packet loss) to occur to react to the congestion (by operating at the 'cliff' on the extreme right of the figure below).
+
+image::bbr/working-point.webp[]
+link:https://queue.acm.org/detail.cfm?id=3022184[Figure credits^]
+
+As TCP BBR is operating at a more optimal point than TCP Reno, so we expected BBR to outperform TCP Reno.
+
+==== Result and Analysis
+
+NOTE: TCP BBR followed by TCP Reno in all three graphs.
+
+image::reno-vs-bbr/tput-vs-time.png[]
+image::reno-vs-bbr/cwnd-vs-time.png[]
+image::reno-vs-bbr/rtt-vs-time.png[]
+
+Although, TCP BBR's TPUT increases towards the end of the graph, over the entire connection, TCP Reno and TCP BBR were both able to use the connection fairly at ~500 Kbps each, as recorded by `iperf3`. This means that TCP BBR is able to hold its own in front of an aggressive algorithm like TCP Reno and it has its optimal point of operation and the consideration of both Bottleneck Bandwidth and RTT to decide the sending rate to thank.
+
+One more interesting thing to note is that even with changes in RTT (as seen in the third graph in this section), TCP BBR is able to operate at a constant sending rate (as indicated by the steady CWND portion in the 2nd graph in this section), which is in contrast to TCP Reno's sending rate. This implies that the optimal point at which TCP BBR operates allows it to keep sending data at unchanged rates on a relatively congested link without getting bogged down by competing TCP flows such as TCP Reno.
+
+link:https://github.com/HarshKapadia2/tcp-version-performance-comparison/tree/main/data/reno-vs-bbr[More details^]
+
+**Similar results were observed for TCP CUBIC vs TCP BBR**, where TCP BBR was able to stand up to TCP CUBIC, much unlike TCP Vegas or TCP Reno.
+
+link:https://github.com/HarshKapadia2/tcp-version-performance-comparison/tree/main/data/cubic-vs-bbr[More details^]
+
+== Conclusion
+
+=== Experiment No. 1
+
+Learning about and comparing the Congestion Windows (CWND) of TCP Reno, TCP CUBIC, TCP Vegas and TCP BBR was revealing in terms of understanding how much difference different ways of thinking and algorithms can make to a protocol’s functioning.
+
+=== Experiment No. 2
+
+Comparing the performance of TCP Reno, TCP CUBIC, TCP Vegas and TCP BBR was revealing in terms of how difficult it is to design TCP versions that are able to utilize the available bandwidth to its maximum and at the same time be fair to other TCP flows on the same connection.
+
+TCP Reno and TCP CUBIC are at one end of the spectrum, where they utilize the available bandwidth to its maximum and reach the point of maximum utilization quickly, but are not fair to other TCP flows sharing the connection, whereas TCP Vegas is at the other end, being very civil to other TCP flows on the connection, but getting eaten up due to its uncompetitiveness.
+
+TCP BBR was the only TCP version that was able to behave fairly with the aggressive TCP Reno and TCP CUBIC versions.
+
+== Extensions
+
+A number of ideas can be further experimented with to draw more conclusions about the performance of the four TCP versions in this project and other TCP versions not in this project as well.
+
+* Change the delay on both the Sender (Romer) and Receiver (Juliet), and check the effect that has on the TPUT of each TCP version. This will show how different TCP versions respond to added delay, because some versions are loss-based, while some are delay-based.
+* Make the network lossy (different percentages) and check the TPUT and RTT for each TCP version.
+* Vary the buffer capacity (speed/rate) and check the TPUT and RTT for every TCP version.
+* Vary the buffer size (amount of bytes held in the buffer) and check the TPUT and RTT for every TCP version.
+
+== References
+
+All references and study material listed here: link:https://networking.harshkapadia.me/tcp[networking.harshkapadia.me/tcp^]
