@@ -1,9 +1,11 @@
 = Performance Comparison of TCP Versions
 Harsh Kapadia
-:author:    Harsh Kapadia
-:toc:       left
-:imagesdir: ./static/img
-:docinfo:   shared
+:toc:               left
+:imagesdir:         ./static/img
+:favicon:           ./static/img/favicon.ico
+:docinfo:           shared
+:keywords:          tcp, tcp reno, tcp cubic, tcp vegas, tcp bbr, tcp versions, performance, computer networking
+:description:       TCP Reno, TCP CUBIC, TCP Vegas and TCP BBR performance comparison.
 :sectanchors:
 :figure-caption!:
 
@@ -257,7 +259,7 @@ TCP BBR was the only TCP version that was able to behave fairly with the aggress
 
 A number of ideas can be further experimented with to draw more conclusions about the performance of the four TCP versions in this project and other TCP versions not in this project as well.
 
-* Change the delay on both the Sender (Romer) and Receiver (Juliet), and check the effect that has on the TPUT of each TCP version. This will show how different TCP versions respond to added delay, because some versions are loss-based, while some are delay-based.
+* Change the delay on both the Sender (Romeo) and Receiver (Juliet), and check the effect that has on the TPUT of each TCP version. This will show how different TCP versions respond to added delay, because some versions are loss-based, while some are delay-based.
 * Make the network lossy (different percentages) and check the TPUT and RTT for each TCP version.
 * Vary the buffer capacity (speed/rate) and check the TPUT and RTT for every TCP version.
 * Vary the buffer size (amount of bytes held in the buffer) and check the TPUT and RTT for every TCP version.
