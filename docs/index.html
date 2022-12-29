@@ -564,7 +564,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <p>Plot the Time vs Congestion Window (CWND) graphs for each TCP version.</p>
 </li>
 <li>
-<p>This fulfills the first <a href="#_learning_outcomes">learning outcome</a>.</p>
+<p>This fulfills the first <a href="#_learning_outcomes">learning outcome</a> of learning and comparing how different TCP versions respond to network congestion.</p>
 </li>
 </ul>
 </div>
@@ -574,10 +574,10 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="ulist">
 <ul>
 <li>
-<p>Plot the Time vs Congestion Window (CWND) and Time vs Throughput (TPUT) graphs for two TCP versions running simultaneously.</p>
+<p>Plot the Time vs Congestion Window (CWND) and Time vs Throughput (TPUT) graphs for two TCP versions running simultaneously on the same connection.</p>
 </li>
 <li>
-<p>This fulfills the second <a href="#_learning_outcomes">learning outcome</a>.</p>
+<p>This fulfills the second <a href="#_learning_outcomes">learning outcome</a> of comparing how fair different TCP versions are to each other.</p>
 </li>
 </ul>
 </div>
@@ -787,10 +787,41 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <p><a href="https://networking.harshkapadia.me/tcp#tcp-bbr" target="_blank" rel="noopener">TCP BBR (Bottleneck Bandwidth and Round-Trip Propagation Time)</a> is a Delay-based and Model-based Algorithm. TCP BBR uses measurement for the network&#8217;s Bottleneck Bandwidth (BB) and Round Trip Propagation Time to build a model which helps determine the data sending (pacing) rate.</p>
 </div>
 <div class="paragraph">
-<p>Expected TCP BBR phases in the graph:
-* Startup Stage (Sharp increase in CWND to probe BB by causing queuing at Bottleneck connection)
-* Drain Stage (Inverse of Startup Stage to remove queuing at the Bottleneck connection)
-* Probe Bandwidth (ProbeBW) Stage (Steady state which monitors RTT)</p>
+<p>Expected TCP BBR phases in the graph:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Startup Stage</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Sharp increase in CWND to probe BB by causing queuing at Bottleneck connection</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Drain Stage</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Inverse of Startup Stage to remove queuing at the Bottleneck connection</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Probe Bandwidth (ProbeBW) Stage</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Steady state which monitors RTT</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
 </div>
 </div>
 <div class="sect3">
@@ -1025,7 +1056,7 @@ TCP BBR followed by TCP Reno in all three graphs.
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2022-12-21 03:24:39 UTC
+Last updated 2022-12-29 18:17:14 UTC
 </div>
 </div>
 </body>

@@ -40,12 +40,12 @@ Two experiments were conducted to meet the link:#_learning_outcomes[learning out
 ==== Experiment No. 1
 
 * Plot the Time vs Congestion Window (CWND) graphs for each TCP version.
-* This fulfills the first link:#_learning_outcomes[learning outcome].
+* This fulfills the first link:#_learning_outcomes[learning outcome] of learning and comparing how different TCP versions respond to network congestion.
 
 ==== Experiment No. 2
 
-* Plot the Time vs Congestion Window (CWND) and Time vs Throughput (TPUT) graphs for two TCP versions running simultaneously.
-* This fulfills the second link:#_learning_outcomes[learning outcome].
+* Plot the Time vs Congestion Window (CWND) and Time vs Throughput (TPUT) graphs for two TCP versions running simultaneously on the same connection.
+* This fulfills the second link:#_learning_outcomes[learning outcome] of comparing how fair different TCP versions are to each other.
 
 == Design and Execution
 
@@ -158,9 +158,13 @@ link:https://github.com/HarshKapadia2/tcp-version-performance-comparison/tree/ma
 link:https://networking.harshkapadia.me/tcp#tcp-bbr[TCP BBR (Bottleneck Bandwidth and Round-Trip Propagation Time)^] is a Delay-based and Model-based Algorithm. TCP BBR uses measurement for the network's Bottleneck Bandwidth (BB) and Round Trip Propagation Time to build a model which helps determine the data sending (pacing) rate.
 
 Expected TCP BBR phases in the graph:
-* Startup Stage (Sharp increase in CWND to probe BB by causing queuing at Bottleneck connection)
-* Drain Stage (Inverse of Startup Stage to remove queuing at the Bottleneck connection)
-* Probe Bandwidth (ProbeBW) Stage (Steady state which monitors RTT)
+
+* Startup Stage
+    ** Sharp increase in CWND to probe BB by causing queuing at Bottleneck connection
+* Drain Stage
+    ** Inverse of Startup Stage to remove queuing at the Bottleneck connection
+* Probe Bandwidth (ProbeBW) Stage
+    **  Steady state which monitors RTT
 
 ==== Result and Analysis
 
